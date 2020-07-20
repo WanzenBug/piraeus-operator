@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	piraeusv1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1"
+
 	piraeusv1alpha1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,7 +27,7 @@ func TestNewConfigMapForPCS(t *testing.T) {
 				Spec: piraeusv1alpha1.LinstorControllerSetSpec{
 					DBConnectionURL:     "etcd://etcd.svc:5000/",
 					DBCertSecret:        "",
-					LinstorClientConfig: piraeusv1alpha1.LinstorClientConfig{},
+					LinstorClientConfig: piraeusv1.LinstorClientConfig{},
 				},
 			},
 			expected: &corev1.ConfigMap{
@@ -67,7 +69,7 @@ controllers = http://test.default-ns.svc:3370
 				Spec: piraeusv1alpha1.LinstorControllerSetSpec{
 					DBConnectionURL:     "etcd://secure.etcd.svc:443/",
 					DBCertSecret:        "mysecret",
-					LinstorClientConfig: piraeusv1alpha1.LinstorClientConfig{},
+					LinstorClientConfig: piraeusv1.LinstorClientConfig{},
 				},
 			},
 			expected: &corev1.ConfigMap{
@@ -111,7 +113,7 @@ controllers = http://test.default-ns.svc:3370
 					DBConnectionURL:     "etcd://secure.etcd.svc:443/",
 					DBCertSecret:        "mysecret",
 					DBUseClientCert:     true,
-					LinstorClientConfig: piraeusv1alpha1.LinstorClientConfig{},
+					LinstorClientConfig: piraeusv1.LinstorClientConfig{},
 				},
 			},
 			expected: &corev1.ConfigMap{
@@ -157,7 +159,7 @@ controllers = http://test.default-ns.svc:3370
 					DBConnectionURL:              "etcd://etcd.svc:5000/",
 					DBCertSecret:                 "",
 					LinstorHttpsControllerSecret: "controller-secret",
-					LinstorClientConfig: piraeusv1alpha1.LinstorClientConfig{
+					LinstorClientConfig: piraeusv1.LinstorClientConfig{
 						LinstorHttpsClientSecret: "secret",
 					},
 				},

@@ -15,22 +15,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package v1_test
 
 import (
 	"reflect"
 	"testing"
+
+	v1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1"
 
 	lapi "github.com/LINBIT/golinstor/client"
 )
 
 func TestToLinstorStoragePool(t *testing.T) {
 	tableTest := []struct {
-		from     StoragePool
+		from     v1.StoragePool
 		expected lapi.StoragePool
 	}{
 		{
-			&StoragePoolLVM{
+			&v1.StoragePoolLVM{
 				Name:        "test0",
 				VolumeGroup: "test0VolumeGroup",
 			},
@@ -43,8 +45,8 @@ func TestToLinstorStoragePool(t *testing.T) {
 			},
 		},
 		{
-			&StoragePoolLVMThin{
-				StoragePoolLVM: StoragePoolLVM{
+			&v1.StoragePoolLVMThin{
+				StoragePoolLVM: v1.StoragePoolLVM{
 					Name:        "test0",
 					VolumeGroup: "test0VolumeGroup",
 				},

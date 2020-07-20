@@ -25,6 +25,7 @@ import (
 	"time"
 
 	lapi "github.com/LINBIT/golinstor/client"
+	piraeusv1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1"
 	piraeusv1alpha1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1alpha1"
 	mdutil "github.com/piraeusdatastore/piraeus-operator/pkg/k8s/metadata/util"
 	"github.com/piraeusdatastore/piraeus-operator/pkg/k8s/reconcileutil"
@@ -151,11 +152,11 @@ func (r *ReconcileLinstorControllerSet) Reconcile(request reconcile.Request) (re
 	}
 
 	if pcs.Status.ControllerStatus == nil {
-		pcs.Status.ControllerStatus = &piraeusv1alpha1.NodeStatus{}
+		pcs.Status.ControllerStatus = &piraeusv1.NodeStatus{}
 	}
 
 	if pcs.Status.SatelliteStatuses == nil {
-		pcs.Status.SatelliteStatuses = make([]*piraeusv1alpha1.SatelliteStatus, 0)
+		pcs.Status.SatelliteStatuses = make([]*piraeusv1.SatelliteStatus, 0)
 	}
 
 	if pcs.Spec.DrbdRepoCred == "" {
@@ -405,7 +406,7 @@ func (r *ReconcileLinstorControllerSet) reconcileStatus(ctx context.Context, pcs
 		controllerName = pod.Name
 	}
 
-	pcs.Status.ControllerStatus = &piraeusv1alpha1.NodeStatus{
+	pcs.Status.ControllerStatus = &piraeusv1.NodeStatus{
 		NodeName:               controllerName,
 		RegisteredOnController: false,
 	}
@@ -431,24 +432,24 @@ func (r *ReconcileLinstorControllerSet) reconcileStatus(ctx context.Context, pcs
 		nodes = nil
 	}
 
-	pcs.Status.SatelliteStatuses = make([]*piraeusv1alpha1.SatelliteStatus, len(nodes))
+	pcs.Status.SatelliteStatuses = make([]*piraeusv1.SatelliteStatus, len(nodes))
 
 	for i := range nodes {
 		node := &nodes[i]
 
-		pcs.Status.SatelliteStatuses[i] = &piraeusv1alpha1.SatelliteStatus{
-			NodeStatus: piraeusv1alpha1.NodeStatus{
+		pcs.Status.SatelliteStatuses[i] = &piraeusv1.SatelliteStatus{
+			NodeStatus: piraeusv1.NodeStatus{
 				NodeName:               node.Name,
 				RegisteredOnController: true,
 			},
 			ConnectionStatus:    node.ConnectionStatus,
-			StoragePoolStatuses: make([]*piraeusv1alpha1.StoragePoolStatus, len(node.StoragePools)),
+			StoragePoolStatuses: make([]*piraeusv1.StoragePoolStatus, len(node.StoragePools)),
 		}
 
 		for j := range node.StoragePools {
 			pool := &node.StoragePools[j]
 
-			pcs.Status.SatelliteStatuses[i].StoragePoolStatuses[j] = piraeusv1alpha1.NewStoragePoolStatus(pool)
+			pcs.Status.SatelliteStatuses[i].StoragePoolStatuses[j] = piraeusv1.NewStoragePoolStatus(pool)
 		}
 	}
 

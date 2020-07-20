@@ -18,6 +18,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	v1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -32,12 +33,12 @@ type LinstorNodeSetSpec struct {
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 
 	// priorityClassName is the name of the PriorityClass for the node pods
-	PriorityClassName PriorityClassName `json:"priorityClassName"`
+	PriorityClassName v1.PriorityClassName `json:"priorityClassName"`
 
 	// StoragePools is a list of StoragePools for LinstorNodeSet to manage.
 	// +optional
 	// +nullable
-	StoragePools *StoragePools `json:"storagePools"`
+	StoragePools *v1.StoragePools `json:"storagePools"`
 
 	// If set, the operator will automatically create storage pools of the specified type for all devices that can
 	// be found. The name of the storage pools matches the device name. For example, all devices `/dev/sdc` will be
@@ -54,7 +55,7 @@ type LinstorNodeSetSpec struct {
 	// the trusted certificates (called `certificates.jks`)
 	// +optional
 	// +nullable
-	SslConfig *LinstorSSLConfig `json:"sslSecret"`
+	SslConfig *v1.LinstorSSLConfig `json:"sslSecret"`
 
 	// drbdRepoCred is the name of the kubernetes secret that holds the credential for the DRBD repositories
 	DrbdRepoCred string `json:"drbdRepoCred"`
@@ -89,7 +90,7 @@ type LinstorNodeSetSpec struct {
 	// +nullable
 	Tolerations []corev1.Toleration `json:"tolerations"`
 
-	LinstorClientConfig `json:",inline"`
+	v1.LinstorClientConfig `json:",inline"`
 }
 
 // KernelModuleInjectionMode describes the source for injecting a kernel module
@@ -119,7 +120,7 @@ type LinstorNodeSetStatus struct {
 	// Errors remaining that will trigger reconciliations.
 	Errors []string `json:"errors"`
 	// SatelliteStatuses by hostname.
-	SatelliteStatuses []*SatelliteStatus `json:"SatelliteStatuses"`
+	SatelliteStatuses []*v1.SatelliteStatus `json:"SatelliteStatuses"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

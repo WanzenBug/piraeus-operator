@@ -25,6 +25,8 @@ import (
 	"strings"
 	"time"
 
+	piraeusv1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1"
+
 	"github.com/BurntSushi/toml"
 
 	piraeusv1alpha1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1alpha1"
@@ -299,21 +301,21 @@ func (r *ReconcileLinstorNodeSet) reconcileResource(ctx context.Context, pns *pi
 	logger.Debug("performing upgrade/fill: #0 -> replace nil with zero objects")
 
 	if pns.Spec.StoragePools == nil {
-		pns.Spec.StoragePools = &piraeusv1alpha1.StoragePools{}
+		pns.Spec.StoragePools = &piraeusv1.StoragePools{}
 		changed = true
 
 		logger.Info("set storage pool to empty default object")
 	}
 
 	if pns.Spec.StoragePools.LVMPools == nil {
-		pns.Spec.StoragePools.LVMPools = make([]*piraeusv1alpha1.StoragePoolLVM, 0)
+		pns.Spec.StoragePools.LVMPools = make([]*piraeusv1.StoragePoolLVM, 0)
 		changed = true
 
 		logger.Info("set storage pool 'LVM' to empty list")
 	}
 
 	if pns.Spec.StoragePools.LVMThinPools == nil {
-		pns.Spec.StoragePools.LVMThinPools = make([]*piraeusv1alpha1.StoragePoolLVMThin, 0)
+		pns.Spec.StoragePools.LVMThinPools = make([]*piraeusv1.StoragePoolLVMThin, 0)
 		changed = true
 
 		logger.Info("set storage pool 'LVMThin to empty list")
@@ -587,7 +589,7 @@ func (r *ReconcileLinstorNodeSet) reconcileStatus(ctx context.Context, nodeSet *
 		logger.Warnf("could not fetch nodes from LINSTOR: %v, continue with empty node list", err)
 	}
 
-	nodeSet.Status.SatelliteStatuses = make([]*piraeusv1alpha1.SatelliteStatus, len(pods))
+	nodeSet.Status.SatelliteStatuses = make([]*piraeusv1.SatelliteStatus, len(pods))
 
 	for i := range pods {
 		pod := &pods[i]
@@ -618,12 +620,12 @@ func (r *ReconcileLinstorNodeSet) reconcileStatus(ctx context.Context, nodeSet *
 	return r.client.Status().Update(ctx, nodeSet)
 }
 
-func satelliteStatusFromLinstor(pod *corev1.Pod, node *lapi.Node, pools []lapi.StoragePool) *piraeusv1alpha1.SatelliteStatus {
-	status := &piraeusv1alpha1.SatelliteStatus{
-		NodeStatus: piraeusv1alpha1.NodeStatus{
+func satelliteStatusFromLinstor(pod *corev1.Pod, node *lapi.Node, pools []lapi.StoragePool) *piraeusv1.SatelliteStatus {
+	status := &piraeusv1.SatelliteStatus{
+		NodeStatus: piraeusv1.NodeStatus{
 			NodeName: pod.Spec.NodeName,
 		},
-		StoragePoolStatuses: []*piraeusv1alpha1.StoragePoolStatus{},
+		StoragePoolStatuses: []*piraeusv1.StoragePoolStatus{},
 	}
 
 	if node == nil {
@@ -633,9 +635,9 @@ func satelliteStatusFromLinstor(pod *corev1.Pod, node *lapi.Node, pools []lapi.S
 	status.ConnectionStatus = node.ConnectionStatus
 	status.RegisteredOnController = node.ConnectionStatus == lc.Online
 
-	poolsStatus := make([]*piraeusv1alpha1.StoragePoolStatus, 0)
+	poolsStatus := make([]*piraeusv1.StoragePoolStatus, 0)
 	for i := range pools {
-		poolsStatus = append(poolsStatus, piraeusv1alpha1.NewStoragePoolStatus(&pools[i]))
+		poolsStatus = append(poolsStatus, piraeusv1.NewStoragePoolStatus(&pools[i]))
 	}
 
 	status.StoragePoolStatuses = poolsStatus
@@ -1002,8 +1004,8 @@ func pnsLabels(pns *piraeusv1alpha1.LinstorNodeSet) map[string]string {
 }
 
 // aggregateStoragePools appends all disparate StoragePool types together, so they can be processed together.
-func (r *ReconcileLinstorNodeSet) aggregateStoragePools(pns *piraeusv1alpha1.LinstorNodeSet) []piraeusv1alpha1.StoragePool {
-	pools := make([]piraeusv1alpha1.StoragePool, 0)
+func (r *ReconcileLinstorNodeSet) aggregateStoragePools(pns *piraeusv1alpha1.LinstorNodeSet) []piraeusv1.StoragePool {
+	pools := make([]piraeusv1.StoragePool, 0)
 
 	for _, thickPool := range pns.Spec.StoragePools.LVMPools {
 		pools = append(pools, thickPool)
@@ -1088,7 +1090,7 @@ func (r *ReconcileLinstorNodeSet) finalizeSatelliteSet(ctx context.Context, pns 
 	// finalization logic fails, don't remove the finalizer so
 	// that we can retry during the next reconciliation.
 	errs := make([]error, 0)
-	keepNodes := make([]*piraeusv1alpha1.SatelliteStatus, 0)
+	keepNodes := make([]*piraeusv1.SatelliteStatus, 0)
 
 	for _, node := range pns.Status.SatelliteStatuses {
 		if err := r.finalizeNode(ctx, pns, node.NodeName); err != nil {

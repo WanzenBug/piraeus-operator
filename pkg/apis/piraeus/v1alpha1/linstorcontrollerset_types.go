@@ -18,6 +18,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	v1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,7 +27,7 @@ import (
 type LinstorControllerSetSpec struct {
 
 	// priorityClassName is the name of the PriorityClass for the controller pods
-	PriorityClassName PriorityClassName `json:"priorityClassName"`
+	PriorityClassName v1.PriorityClassName `json:"priorityClassName"`
 
 	// DBConnectionURL is the URL of the ETCD endpoint for LINSTOR Controller
 	DBConnectionURL string `json:"dbConnectionURL"`
@@ -53,7 +54,7 @@ type LinstorControllerSetSpec struct {
 	// trusted certificates (called `certificates.jks`)
 	// +nullable
 	// +optional
-	SslConfig *LinstorSSLConfig `json:"sslSecret"`
+	SslConfig *v1.LinstorSSLConfig `json:"sslSecret"`
 
 	// DrbdRepoCred is the name of the kubernetes secret that holds the credential for the
 	// DRBD repositories
@@ -88,7 +89,7 @@ type LinstorControllerSetSpec struct {
 	// +nullable
 	Tolerations []corev1.Toleration `json:"tolerations"`
 
-	LinstorClientConfig `json:",inline"`
+	v1.LinstorClientConfig `json:",inline"`
 }
 
 // LinstorControllerSetStatus defines the observed state of LinstorControllerSet
@@ -104,9 +105,9 @@ type LinstorControllerSetStatus struct {
 	// Errors remaining that will trigger reconciliations.
 	Errors []string `json:"errors"`
 	// ControllerStatus information.
-	ControllerStatus *NodeStatus `json:"ControllerStatus"`
+	ControllerStatus *v1.NodeStatus `json:"ControllerStatus"`
 	// SatelliteStatuses by hostname.
-	SatelliteStatuses []*SatelliteStatus `json:"SatelliteStatuses"`
+	SatelliteStatuses []*v1.SatelliteStatus `json:"SatelliteStatuses"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

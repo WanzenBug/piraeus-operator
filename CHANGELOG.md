@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * `snapshot-controller` => set `csi-snapshotter.replicas` to the desired count for cluster-wide CSI snapshot controller
   * `csi-controller` => set `csi.controllerReplicas` to the desired count for the linstor CSI controller
   * `operator` => set `operator.replicas` to have multiple replicas of the operator running
+* `LinstorCSIDriver` is now stable and released as`v1`. Resources in older versions (`v1alpha1`) are deprecated
+  and will be removed in a future release.
 
 [resource requirements]: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 

@@ -5,8 +5,9 @@ import (
 	"reflect"
 	"testing"
 
+	piraeusv1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1"
+
 	"github.com/piraeusdatastore/piraeus-operator/pkg/apis"
-	piraeusv1alpha1 "github.com/piraeusdatastore/piraeus-operator/pkg/apis/piraeus/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	storagev1beta1 "k8s.io/api/storage/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -67,12 +68,12 @@ func TestReconcileLinstorCSIDriver_Reconcile(t *testing.T) {
 		{
 			name: "default-config-creates-everything",
 			initialResources: []runtime.Object{
-				&piraeusv1alpha1.LinstorCSIDriver{
+				&piraeusv1.LinstorCSIDriver{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "foo",
 						Namespace: "bar",
 					},
-					Spec: piraeusv1alpha1.LinstorCSIDriverSpec{},
+					Spec: piraeusv1.LinstorCSIDriverSpec{},
 				},
 			},
 			expectedResources: expectedResources{
